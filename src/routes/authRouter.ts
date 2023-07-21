@@ -7,5 +7,4 @@ route.post('/login',login);
 
 route.post('/signup',signup);
 
-
 export default route;

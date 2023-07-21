@@ -27,7 +27,7 @@ export const login = asyncErrorHandler(async (req: Request, res: Response) => {
 	const isMatch = await user?.comparePasswordInDB(password, user.password);
 
 	if (!user || !isMatch) {
-		throw new CustomError("Email or Password is incorrect!🥴", 400);
+		throw new CustomError("Invalid credentials!🥴", 400);
 	}
 
 	const token = generateToken(user._id);
