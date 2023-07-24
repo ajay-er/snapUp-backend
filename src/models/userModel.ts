@@ -10,6 +10,7 @@ interface IUser extends Document {
 	confirmPassword: string;
 	phoneNumber: string;
 	passwordChangedAt: Date;
+	imageUrl:string,
 	comparePasswordInDB: (password: string, passwordInDB: string) => Promise<boolean>;
 }
 
@@ -44,7 +45,7 @@ const userSchema = new mongoose.Schema<IUser>({
 			validator: function (value: string) {
 				return (this as any).password === value;
 			},
-			message: "Password & Confirm password doesnt mathch"
+			message: "Password & Confirm password doesnt match"
 		}
 	},
 	phoneNumber: {
@@ -57,6 +58,9 @@ const userSchema = new mongoose.Schema<IUser>({
 			message: "Please enter a valid phone number"
 		}
 	},
+	imageUrl: {	
+		type: String,
+	}
 });
 
 userSchema.pre("save", async function (next) {

@@ -1,11 +1,9 @@
 import express from "express";
 import { protect } from "../middlewares/authMiddleware";
-import { profile } from "../controllers/userController";
 import { upload } from "../config/multer";
+import { uploadProfile} from "../controllers/userController";
 let route = express.Router();
 
-route.get("/profile", protect, profile);
-
-route.post('/upload-profile', upload.single('image'));
+route.put('/upload-profile',protect, upload.single('image'),uploadProfile);
 
 export default route;

@@ -36,6 +36,7 @@ export const protect = asyncErrorHandler(async (req: Request, res: Response, nex
 	//4.if the user change the password after the token was issued
 	//pending
 
+	(req as any).user = user;
 	next();
 });
 

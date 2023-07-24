@@ -51,7 +51,14 @@ let multerErrorHandler = (error: any) => {
 	return error;
 };
 
-let errorHandler = (error: CustomError, req: Request, res: Response, next: NextFunction) => {
+let mongooseDuplicateErrorHandler = () => {
+	const msg = "Email already registered.";
+	return new CustomError(msg, 400);
+}
+
+
+
+let errorHandler = (error: any, req: Request, res: Response, next: NextFunction) => {
 	error.statusCode = error.statusCode || 500;
 	error.status = error.status || "error";
 
@@ -61,7 +68,8 @@ let errorHandler = (error: CustomError, req: Request, res: Response, next: NextF
 		if (error.name === "ValidationError") error = validationErrorHandler(error);
 		if (error.name === "JsonWebTokenError") error = jwtErrorHandler();
 		if (error instanceof multer.MulterError) error = multerErrorHandler(error);
-
+		if (error.code === 11000) error = mongooseDuplicateErrorHandler();
+			
 		prodErrors(res, error);
 	}
 };

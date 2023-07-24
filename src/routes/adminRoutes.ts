@@ -2,9 +2,10 @@ import express from 'express';
 let route = express.Router();
 
 
+route.post('/createuser');
 
-route.post('/adduser');
+route.post('/updateuser');
 
-route.delete('/removeuser');
+route.delete('/deleteuser');
 
 export default route;
