@@ -33,7 +33,12 @@ let validationErrorHandler = (error: any) => {
 };
 
 let jwtErrorHandler = () => {
-	const msg = "Invalid token. Please log in again.";
+	const msg = "Invalid token. Please login again.";
+	return new CustomError(msg, 401);
+};
+
+let jwtTokenExipirationErrorHander = () => {
+	const msg = "Your token exipired. Please login again.";
 	return new CustomError(msg, 401);
 };
 
@@ -54,9 +59,7 @@ let multerErrorHandler = (error: any) => {
 let mongooseDuplicateErrorHandler = () => {
 	const msg = "Email already registered.";
 	return new CustomError(msg, 400);
-}
-
-
+};
 
 let errorHandler = (error: any, req: Request, res: Response, next: NextFunction) => {
 	error.statusCode = error.statusCode || 500;
@@ -67,9 +70,10 @@ let errorHandler = (error: any, req: Request, res: Response, next: NextFunction)
 	} else if (process.env.NODE_ENV === "production") {
 		if (error.name === "ValidationError") error = validationErrorHandler(error);
 		if (error.name === "JsonWebTokenError") error = jwtErrorHandler();
+		if (error.name === "TokenExpiredError") error = jwtTokenExipirationErrorHander();
 		if (error instanceof multer.MulterError) error = multerErrorHandler(error);
 		if (error.code === 11000) error = mongooseDuplicateErrorHandler();
-			
+
 		prodErrors(res, error);
 	}
 };

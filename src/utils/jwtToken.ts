@@ -1,7 +1,12 @@
 import jwt from "jsonwebtoken";
 
-const generateToken = (id: any) => {
-	return jwt.sign({ id }, process.env.JWT_SECRET!, {
+interface IPayLoad{
+	id: string,
+	role:string
+}
+
+const generateToken = (payLoad:IPayLoad) => {
+	return jwt.sign(payLoad, process.env.JWT_SECRET!, {
 		expiresIn: process.env.JWT_LOGIN_EXPIRES
 	});
 };
