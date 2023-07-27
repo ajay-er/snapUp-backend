@@ -36,7 +36,10 @@ export const login = asyncErrorHandler(async (req: Request, res: Response) => {
 });
 
 export const getAllUsers = asyncErrorHandler(async (req: Request, res: Response) => {
-	const users = await User.find({});
+	const page: number = Number(req.query.page) || 1;
+	const limit: number = Number(req.query.limit) || 5;
+	const skip: number = (page - 1) * limit;
+	const users = await User.find().skip(skip).limit(limit);
 
 	res.status(200).json({
 		status: "success",
