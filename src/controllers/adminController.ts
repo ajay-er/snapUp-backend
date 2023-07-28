@@ -38,10 +38,11 @@ export const getAllUsers = asyncErrorHandler(async (req: Request, res: Response)
 	const page: number = Number(req.query.page) || 1;
 	const limit: number = Number(req.query.limit) || 5;
 	const skip: number = (page - 1) * limit;
+
 	const users = await User.find().skip(skip).limit(limit);
 
+	let moviesCount = Number(await User.countDocuments());;
 	if (req.query.page) {
-		const moviesCount = Number(await User.countDocuments());
 		if (skip >= moviesCount) {
 			throw new CustomError("Page is not found!Please provide a valid page number", 404);
 		}
@@ -49,7 +50,8 @@ export const getAllUsers = asyncErrorHandler(async (req: Request, res: Response)
 
 	res.status(200).json({
 		status: "success",
-		users
+		total:moviesCount,
+		users,
 	});
 });
 
