@@ -21,8 +21,7 @@ export const login = asyncErrorHandler(async (req: Request, res: Response) => {
 		throw new CustomError("Invalid credentials!🥴", 400);
 	}
 
-
-	const token = generateToken({id:admin._id,role:'admin'});
+	const token = generateToken({ id: admin._id, role: "admin" });
 
 	res.status(200).json({
 		status: "success",
@@ -36,11 +35,23 @@ export const login = asyncErrorHandler(async (req: Request, res: Response) => {
 });
 
 export const getAllUsers = asyncErrorHandler(async (req: Request, res: Response) => {
-	const users = await User.find({});
+	const page: number = Number(req.query.page) || 1;
+	const limit: number = Number(req.query.limit) || 5;
+	const skip: number = (page - 1) * limit;
+
+	const users = await User.find().skip(skip).limit(limit);
+
+	let moviesCount = Number(await User.countDocuments());;
+	if (req.query.page) {
+		if (skip >= moviesCount) {
+			throw new CustomError("Page is not found!Please provide a valid page number", 404);
+		}
+	}
 
 	res.status(200).json({
 		status: "success",
-		users
+		total:moviesCount,
+		users,
 	});
 });
 
@@ -86,19 +97,17 @@ export const updateUser = asyncErrorHandler(async (req: Request, res: Response) 
 	});
 });
 
-
 export const deleteUser = asyncErrorHandler(async (req: Request, res: Response) => {
 	const id = req.params.id;
-	
+
 	const result = await User.findByIdAndDelete(id);
 
 	if (!result) {
-		throw new CustomError('Wrong user Id', 400);
+		throw new CustomError("Wrong user Id", 400);
 	}
 
 	res.status(200).json({
 		status: "success",
-		message:"user deleted successfully"
+		message: "user deleted successfully"
 	});
-
-})
+});
